@@ -6,8 +6,6 @@ var inputs = document.querySelectorAll('form input')
  var xMark= document.getElementById('xMark');
  var main = document.querySelector('main')
  var poppupWarning = document.getElementById('poppup-warning')
-
-//  var main = document.getElementsByTagName('main')[0]
 var bookmark = document.getElementsByClassName('bookmark')[0];
 var tableBody = document.getElementById('table-body')
 
@@ -16,33 +14,19 @@ form.addEventListener('click',function(e){
 e.preventDefault()
 })
 
-
-
-
-// var regUrl = /^(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/
-
-// var regUrl =  /^(https:\/\/)(www.)|(http:\/\/)(www.)/
-
-// var testUrl = regUrl.test(siteUrl.value);
-
+ 
 // ==================================
 var favoriteSites = [];
 if(JSON.parse(localStorage.getItem('Fav Sites')) !=null){
     favoriteSites = JSON.parse(localStorage.getItem('Fav Sites'))
     displayData()
 }
-
-
 // ==================================================
 // check valid or not 
 
 for(let i =0 ; i<inputs.length ; i++){
-    inputs[i].addEventListener('keyup',function () {
-        for(let j = 0 ; j<favoriteSites.length ; j++){
-        if(siteName.value === favoriteSites[j].name){
-                poppupWarning.style.display='block'   
-                
-            }else if(siteName.value.length  < 3 || siteName.value.length == 0 ){
+    inputs[i].addEventListener('keyup',function ( ) {
+       if(siteName.value.length  < 3 || siteName.value.length == 0 ){
                 siteName.classList.add('not-valid');
                     siteName.classList.remove('valid');  
         }else{
@@ -51,7 +35,7 @@ for(let i =0 ; i<inputs.length ; i++){
                     siteName.classList.remove('not-valid');
             }
        
-    }
+    
 
         if( siteUrl.value == 0 ||  /^(https:\/\/)(www.)|(http:\/\/)(www.)/.test(siteUrl.value)  == false ){
              siteUrl.classList.add('not-valid');
@@ -60,9 +44,22 @@ for(let i =0 ; i<inputs.length ; i++){
              siteUrl.classList.add('valid');
             siteUrl.classList.remove('not-valid');
         }
+   
       })
 }
-
+// ==========================================
+ 
+ 
+siteName.addEventListener('keyup',function(){
+    
+poppupWarning.style.display='none'
+for(let i =0 ; i<favoriteSites.length ; i++){
+    if(favoriteSites[i].name === siteName.value ){
+        poppupWarning.style.display='block'
+    } 
+}
+})
+ 
 
 // =================================================
 function closePoupp(){
@@ -76,25 +73,30 @@ function closePoupp(){
 //==================================================== 
  
 function addFavSite(){
- 
-    if( siteName.value.length  < 3 || siteName.value.length == 0  ||  siteUrl.value == 0 ||  /^(https:\/\/)(www.)|(http:\/\/)(www.)/.test(siteUrl.value) == false ){
-        poppup.style.cssText='display:block';
+  
+  if( siteName.value.length  < 3 || siteName.value.length == 0  ||  siteUrl.value == 0 ||  /^(https:\/\/)(www.)|(http:\/\/)(www.)/.test(siteUrl.value) == false ){
+          poppup.style.cssText='display:block';
         main.style.filter='brightness(60%)'
         closePoupp()
  
 }
 else{
-    poppup.style.display = 'none'
-    var allsites = {
-        name:siteName.value,
-        url:siteUrl.value
+    var siteExite =  favoriteSites.find((site)=> site.name == siteName.value )  
+    if(!siteExite){
+        poppup.style.display = 'none'
+        var allsites = {
+            name:siteName.value,
+            url:siteUrl.value
+        }
+        favoriteSites.push(allsites)
+      
+     localStorage.setItem('Fav Sites',JSON.stringify(favoriteSites))
+    
+     
+     
     }
-    // isExiste()
-                favoriteSites.push(allsites)
-  
-   
- localStorage.setItem('Fav Sites',JSON.stringify(favoriteSites))
 
+    
 }
 
 displayData()
@@ -105,6 +107,10 @@ siteName.classList.remove('valid' , 'not-valid')
 siteUrl.classList.remove('valid' , 'not-valid')
  
 }
+
+// ==============================================
+// displayData
+
 function displayData ( ){
     var allData = ''
     for(let i = 0 ; i<favoriteSites.length ; i++){
@@ -120,6 +126,8 @@ function displayData ( ){
     tableBody.innerHTML= allData
 }
 
+// ===============================================
+// deleteData
 
 function deleteSite(index){
             favoriteSites.splice(index , 1);
@@ -128,7 +136,8 @@ function deleteSite(index){
             displayData()
 }
 
-
+// =================================================
+// visitSite
 function visitSite(index){
     var getUrl = favoriteSites[index];
 
@@ -136,15 +145,5 @@ function visitSite(index){
 
 }
 
-// function isExiste() {
-//     for (let i = 0; i < favoriteSites.length; i++) {
-//         if(siteName.value !== favoriteSites[i].name){
-//             poppupWarning.style.display='none' 
-//             favoriteSites.push(all)  
-            
-//         }else{
-//             poppupWarning.style.display='block'   
-//         }
-        
-//     }
-//   }
+
+ 
